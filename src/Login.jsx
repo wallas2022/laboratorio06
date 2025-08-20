@@ -1,7 +1,8 @@
 // src/Login.jsx
 import React, { useState } from 'react';
 import {
-  Box, Button, Flex, FormControl, FormLabel, Input, Heading, Text,
+  Box, Button, Flex, FormControl, FormLabel, Input,
+  Heading, Text, Image, VStack
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,16 +19,13 @@ const Login = () => {
     setLoading(true);
 
     try {
-     const r = await fetch('https://dummyjson.com/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password, expiresInMins: 30 }),
-        
+      const r = await fetch('https://dummyjson.com/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password, expiresInMins: 30 })
       });
 
-      // Si el preflight fallara, muchas veces r.ok es false o ni llega acá.
       if (!r.ok) {
-        // Intenta leer detalle de error si lo hay
         let msg = 'Error de autenticación';
         try {
           const err = await r.json();
@@ -40,10 +38,9 @@ const Login = () => {
       const { accessToken } = data || {};
       if (!accessToken) throw new Error('No se recibió accessToken');
 
-      // Guarda el token (ejemplo sencillo en localStorage)
       localStorage.setItem('token', accessToken);
 
-      // Opcional: comprobar /auth/me con el Bearer
+      // Validar token
       const me = await fetch('https://dummyjson.com/auth/me', {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -67,8 +64,18 @@ const Login = () => {
         rounded="xl"
         shadow="md"
         minW={{ base: '90%', sm: '400px' }}
+        textAlign="center"
       >
-        <Heading mb={6} textAlign="center">Iniciar Sesión</Heading>
+        <VStack spacing={4} mb={6}>
+          {/* 🔹 Logo UMG (puedes reemplazar por tu archivo local en /assets) */}
+          <Image
+            src="https://play-lh.googleusercontent.com/PAgEDMao5gLi5N-9x-EdPIihJHe0CRqscma-BQPunQoV887HW58Wi8ccdAtU2UwBnwo=w480-h960-rw"
+            alt="Logo UMG"
+            boxSize="80px"
+            objectFit="contain"
+          />
+          <Heading size="md">Laboratorio 05 – APIs DummyJSON</Heading>
+        </VStack>
 
         <FormControl mb={4}>
           <FormLabel>Usuario</FormLabel>
@@ -89,7 +96,7 @@ const Login = () => {
           />
         </FormControl>
 
-        {error && <Text color="red.500" mb={4} textAlign="center">{error}</Text>}
+        {error && <Text color="red.500" mb={4}>{error}</Text>}
 
         <Button type="submit" w="full" colorScheme="blue" isLoading={loading}>
           Entrar
