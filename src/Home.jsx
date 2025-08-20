@@ -1,14 +1,32 @@
+// src/Home.jsx
 import React from 'react';
-import { Box, Heading, Text, Flex } from '@chakra-ui/react';
+import { Box, Heading, Text, Button, Flex } from '@chakra-ui/react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const token = localStorage.getItem('token');
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // borrar token
+    navigate('/'); // redirigir a login
+  };
+
   return (
-    <Flex minH="100vh" align="center" justify="center" bg="gray.50">
-      <Box bg="white" p={6} rounded="xl" shadow="md">
-        <Heading mb={2} textAlign="center">Bienvenido!</Heading>
-        <Text textAlign="center">Has iniciado sesión correctamente ✅</Text>
-      </Box>
-    </Flex>
+    <Box p={8}>
+      <Heading mb={4}>Home</Heading>
+      <Text mb={4}>Token presente: {token ? 'Sí' : 'No'}</Text>
+
+      <Flex gap={4}>
+        <Button onClick={handleLogout} colorScheme="red">
+          Cerrar sesión
+        </Button>
+
+        <Button as={Link} to="/productos" colorScheme="blue">
+          Ir a Productos
+        </Button>
+      </Flex>
+    </Box>
   );
 };
 
